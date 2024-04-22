@@ -27,6 +27,7 @@
 
           <div class="pokeInfo screen">
             <p>{{ pokemonData.description }}</p>
+            <p v-if="pokemonData.game_version">Versions: {{ pokemonData.game_version.join(', ') }}</p>
             <audio ref="audioCrie" v-if="pokemonData.audio" :src="pokemonData.audio"></audio>
           </div>
         </div>
@@ -40,15 +41,15 @@
           <div class="gap"></div>
         </div>
         <div class="col-md-5 painel right-painel">
-          <!--<p v-if="pokemonData.game_version">{{ pokemonData.game_version.join(', ') }}</p>-->
+
           <div class="painel-row">
             <div class="screen stats">
-              <div class="stat-line">HP..............</div>
-              <div class="stat-line">Attack..........</div>
-              <div class="stat-line">Defense.........</div>
-              <div class="stat-line">Sp.Attack.......</div>
-              <div class="stat-line">Sp.Defense......</div>
-              <div class="stat-line">Speed...........</div>
+              <div class="stat-line">HP......................{{ statusHp }}</div>
+              <div class="stat-line">Attack..............{{ statusAttack }}</div>
+              <div class="stat-line">Defense............{{ statusDefense }}</div>
+              <div class="stat-line">Sp.Attack.........{{ statusSPAttack }}</div>
+              <div class="stat-line">Sp.Defense.......{{ statusSPDefense }}</div>
+              <div class="stat-line">Speed................{{ statusSpeed }}</div>
             </div>
             <div class="type-list">
               <div class="panel-header">Types</div>
@@ -121,12 +122,26 @@
           </div>
           <div class="painel-row move-list">
             <div class="move-body move-screen screen">
-              <h4>lista de moves</h4>
-              <div>
-                <p>nome do move</p>
-                <p>power</p>
-                <p>pp</p>
-                <p>priority</p>
+              <div class="move-left">
+                <div class="move-name">#{{ moveId ? moveId : '-' }} {{ moveName ? moveName : '-' }}</div>
+                <div class="move-stat">Power: {{ movePower ? movePower : '-' }}</div>
+                <div class="move-stat">PP: {{ movePP ? movePP : '-' }}</div>
+                <div class="move-stat">Accuracy: {{ moveAccuracy ? moveAccuracy : '-' }}</div>
+                <div class="move-stat">Priority: {{ movePriority ? movePriority : '0' }}</div>
+              </div>
+              <div class="move-right">
+                <div :style="{ backgroundColor: colors[moveType] }" class="move-type">
+                  Type: {{ moveType ? moveType : '-' }}
+                </div>
+              </div>
+            </div>
+            <div class="move-controls">
+              <div @click="moveListPreview" class="move-arrow">
+                <b-icon icon="arrow-up-short"></b-icon>
+              </div>
+              <div @click="moveListNext" class="move-arrow">
+
+                <b-icon icon="arrow-down-short"></b-icon>
               </div>
             </div>
           </div>
@@ -139,6 +154,7 @@
 
 <script>
 import { mdiWaveform } from '@mdi/js';
+
 const colors = {
   fire: '#EC8484',
   grass: '#8CC66D',
@@ -175,7 +191,24 @@ export default {
       evoSpriteOne: '',
       evoSpriteTwo: '',
       evoSpriteTree: '',
-      moveList: '',
+      moveId: '',
+      moveName: '',
+      movePower: '',
+      movePP: '',
+      moveAccuracy: '',
+      moveType: '',
+      movePriority: '',
+      moveCount: 0,
+      statusHp: '',
+      statusAttack: '',
+      statusDefense: '',
+      statusSPAttack: '',
+      statusSPDefense: '',
+      statusSpeed: '',
+
+
+
+
       //moves: this.pokemonData.moves    
 
 
@@ -192,6 +225,14 @@ export default {
       const audioCrie = this.$refs.audioCrie;
       audioCrie.play();
     },
+    statusDefine() {
+      this.statusHp = this.pokemonData.stats[0].base_stat;
+      this.statusAttack = this.pokemonData.stats[1].base_stat;
+      this.statusDefense = this.pokemonData.stats[2].base_stat;
+      this.statusSPAttack = this.pokemonData.stats[3].base_stat;
+      this.statusSPDefense = this.pokemonData.stats[4].base_stat;
+      this.statusSpeed = this.pokemonData.stats[5].base_stat;
+    },
     spriteShiny() {
       if (!this.isShiny) {
         if (this.pokemonData.spriteShiny) {
@@ -204,7 +245,7 @@ export default {
       }
       this.isShiny = !this.isShiny;
 
-      console.log("chamando shiny", this.isShiny)
+      //console.log("chamando shiny", this.isShiny)
 
     },
     spriteFemale() {
@@ -303,12 +344,62 @@ export default {
 
         return evoData
       } catch (error) {
-        console.log("Pokemon duas ou menos evoluções");
+        console.log("Pokemon com duas ou menos evoluções");
       }
 
 
 
     },
+    async moveList() {
+      //console.log(this.pokemonData.moves[0].move.url);
+
+      const moveUrl = await fetch(this.pokemonData.moves[this.moveCount].move.url);
+      const dataMove = await moveUrl.json();
+      //console.log(dataMove);
+      if (dataMove) {
+        this.moveId = dataMove.id;
+        this.moveName = dataMove.name;
+        this.movePP = dataMove.pp;
+        this.movePower = dataMove.power;
+        this.moveType = dataMove.type.name;
+        this.moveAccuracy = dataMove.type.accuracy;
+        this.movePriority = dataMove.priority;
+      }
+      //const moveInit = this.pokemonData.moves[0].move.name;
+    },
+    async moveListNext() {
+      this.moveCount++;
+      const moveUrl = await fetch(this.pokemonData.moves[this.moveCount].move.url);
+      const dataMove = await moveUrl.json();
+      //console.log(dataMove, this.moveCount);
+      if (dataMove) {
+        this.moveId = dataMove.id;
+        this.moveName = dataMove.name;
+        this.movePP = dataMove.pp;
+        this.movePower = dataMove.power;
+        this.moveType = dataMove.type.name;
+        this.moveAccuracy = dataMove.type.accuracy;
+        this.movePriority = dataMove.priority;
+      }
+      //console.log(this.moveCount);
+    },
+    async moveListPreview() {
+      this.moveCount--;
+      const moveUrl = await fetch(this.pokemonData.moves[this.moveCount].move.url);
+      const dataMove = await moveUrl.json();
+      //console.log(dataMove, this.moveCount);
+      if (dataMove) {
+        this.moveId = dataMove.id;
+        this.moveName = dataMove.name;
+        this.movePP = dataMove.pp;
+        this.movePower = dataMove.power;
+        this.moveType = dataMove.type.name;
+        this.moveAccuracy = dataMove.type.accuracy;
+        this.movePriority = dataMove.priority;
+      }
+      //console.log(this.moveCount);
+
+    }
 
 
 
@@ -316,14 +407,13 @@ export default {
   },
   mounted() {
     this.$refs.audioCrie.volume = 0.3;
+    this.statusDefine();
     this.evoChain();
+    this.moveList();
 
 
 
   },
-  computed: {
-
-  }
 }
 
 
@@ -421,6 +511,14 @@ export default {
   box-sizing: border-box;
   min-height: 110px;
   flex: 1;
+}
+
+.pokeInfo p {
+  color: #2424247e;
+  letter-spacing: 0;
+  font-weight: 700;
+  font-style: italic;
+  font-size: 1em;
 }
 
 
@@ -557,11 +655,13 @@ export default {
   justify-content: flex-start;
   margin: 5px;
   flex: 1;
+  text-align: justify;
 }
 
 .stat-line {
-  font-size: 17px;
+  font-size: 12px;
   text-transform: capitalize;
+  font-weight: 700;
 }
 
 .type {
@@ -722,9 +822,11 @@ export default {
 
 .move-name {
   font-size: 24px;
+  font-weight: 500;
+  font-style: italic;
   border-bottom: solid black 2px;
   margin-bottom: 3px;
-  text-align: center;
+  text-align: start;
   text-transform: capitalize;
 }
 
@@ -743,28 +845,62 @@ export default {
   flex-direction: column;
 }
 
-.move-learn {
-  /* font-size: 20px; */
-  float: right;
-  margin-right: 3px;
+.move-controls {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding: 0 10px 0 7px;
 }
 
-.move-status {
+
+.move-stat {
   text-transform: capitalize;
+  font-style: italic;
+  color: #242424d0;
+  font-weight: 500;
   margin-right: 3px;
   margin-top: 3px;
 }
 
-.types button {
-  width: 80px;
-  height: 30px;
-  margin: 10px;
-  border-radius: 5px;
-  box-shadow: 0px 0px 0px 2px #289bb88a;
-  font-family: sans-serif;
-  color: white;
-  font-weight: 700;
+.move-arrow {
+  height: 40px;
+  width: 40px;
+  font-size: 37px;
+  border: groove grey 3px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-shadow: #e78181 -1px 1px;
+  cursor: pointer;
+  transform: rotate(60deg);
 }
+
+.move-arrow>* {
+  transform: rotate(-60deg);
+}
+
+.move-arrow:first-child>* {
+  padding-bottom: 5px;
+}
+
+.move-arrow:last-child>* {
+  padding-top: 1px;
+}
+
+.move-arrow:hover {
+  border-color: rgb(184, 237, 124);
+}
+
+.move-arrow:active {
+  border-color: rgb(244, 252, 185);
+}
+
+.down-arrow {
+  background: yellow;
+}
+
+
 
 .close-btn {
   position: absolute;
