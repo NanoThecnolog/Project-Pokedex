@@ -1,12 +1,12 @@
 
 <template>
     <div class="filter" app>
-        <input type="text" v-model="filterId" placeholder="Filtrar por ID">
-        <input type="text" v-model="filterType" placeholder="Filtrar por Tipo">
-        <input type="text" v-model="filterSpecies" placeholder="Filtrar por Espécie">
-        <input type="text" v-model="filterName" placeholder="Filtrar por Nome">
-        <button @click="applyFilters">Filtrar</button>
-        <button @click="clearFilters">Todos os Pokemons</button>
+        <input type="text" v-model="filterId" placeholder="ID">
+        <input type="text" v-model="filterType" placeholder="Type">
+        <input type="text" v-model="filterSpecies" placeholder="Species">
+        <input type="text" v-model="filterName" placeholder="Name">
+        <button @click="applyFilters">Search</button>
+        <button @click="clearFilters">All Pokemons</button>
     </div>
 </template>
 

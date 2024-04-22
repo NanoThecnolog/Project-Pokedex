@@ -48,7 +48,7 @@ export default({
       selectedPokemon: null,
       page: 1,      
       loading: false,
-      limit: 50,
+      limit: 250,
       filters: {},
     };
   },

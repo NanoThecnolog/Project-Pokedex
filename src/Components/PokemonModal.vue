@@ -11,10 +11,10 @@
                 </div>
                   <div class="shiny-container">
                       <div class="image-container">
-                          <p>Peso: {{ pokemonData.weight / 10}} kg</p>
-                          <p>Altura: {{ pokemonData.height / 10 }}m</p>
+                          <p>Weight: {{ pokemonData.weight / 10}} kg</p>
+                          <p>Height: {{ pokemonData.height / 10 }}m</p>
                         
-                          <img v-if="sprite" @click="playCrie" :src="sprite" :alt="pokemonData.name" class="pokeImage" title="Clique no pokemon para ouvi-lo!">
+                          <img v-if="sprite" @click="playCrie" :src="sprite" :alt="pokemonData.name" class="pokeImage" title="Click to hear the pokemon's crie!">
                       </div>                      
                       <div class="sprite-controls">
                         <div @click="spriteFemale" class="sprite-control sprite-controls-gender">F</div>
@@ -24,23 +24,9 @@
                       </div>
                   </div>
                 
-                <div class="pokeInfo screen">
-                    
-                    <!--<p>Peso: {{ pokemonData.weight / 10}} kg</p>
-                    <p>Altura: {{ pokemonData.height / 10 }}m</p>-->
-                
+                <div class="pokeInfo screen">                 
                   <p>{{ pokemonData.description}}</p>
-                  <!--<button class="audio-btn" @click="playCrie"><svg-icon type="mdi" :path="path"></svg-icon></button>-->
                   <audio ref="audioCrie" v-if="pokemonData.audio" :src="pokemonData.audio"></audio>
-                  <!--<div class ="types" v-if="pokemonData.types">
-                      
-                      <div class="d-flex">
-                        <h4>Tipos:</h4>
-                        <button v-if="pokemonData.types[0]" :style="{ backgroundColor: colors[pokemonData.types[0]]}">{{ pokemonData.types[0] }}</button>
-                        <button v-if="pokemonData.types[1]" :style="{ backgroundColor: colors[pokemonData.types[1]]}">{{ pokemonData.types[1] }}</button>
-                      </div>
-                      
-                  </div>-->
                 </div>
               </div> 
               <div class="divide">
@@ -76,49 +62,71 @@
                       <div class="flex-center">
                         <div class="evo-num">I</div>
                       </div>
-                        <div :class="{ 'pokemon-sprite': !evoOne, 'pokemon-sprite-small': !evoOne, 'empty-evo': !evoOne }">
-                          <img v-if="evoOne" :src="evoSpriteOne" :alt="evoOne" class="pokemon-sprite pokemon-sprite-small">
+                        <div :class="{ 'pokemon-sprite': !evoSpriteOne, 'pokemon-sprite-small': !evoSpriteOne, 'empty-evo': !evoSpriteOne }" class="sprite-image">
+                          <img v-if="evoSpriteOne" :src="evoSpriteOne" :alt="evoOne" class="pokemon-sprite pokemon-sprite-small">
+                          <div v-if="!evoSpriteOne" class="poke-ball">
+                            <div class="poke-ball-top"></div>
+                            <div class="poke-ball-center">
+                              <div class="poke-ball-dot"></div>
+                            </div>
+                            <div class="poke-ball-bottom"></div>
+                          </div>
                         </div>
                         <div class="screen evo-name">{{ evoOne ? evoOne : 'No data' }}</div>
                   </div>
-                  
                   <div>
                     <div class="flex-center">
                       <div class="evo-num">II</div>
                     </div>                  
-                      <div :class="{ 'pokemon-sprite': !evoOne, 'pokemon-sprite-small': !evoOne, 'empty-evo': !evoOne }">
-                        <img v-if="evoTwo" :src="evoSpriteTwo" :alt="evoTwo" class="pokemon-sprite pokemon-sprite-small">
+                      <div :class="{ 'pokemon-sprite': !evoSpriteTwo, 'pokemon-sprite-small': !evoSpriteTwo, 'empty-evo': !evoSpriteTwo }" class="sprite-image">
+                        <img v-if="evoSpriteTwo" :src="evoSpriteTwo" :alt="evoTwo" class="pokemon-sprite pokemon-sprite-small">
+                        <div v-if="!evoSpriteTwo" class="poke-ball">
+                            <div class="poke-ball-top"></div>
+                            <div class="poke-ball-center">
+                              <div class="poke-ball-dot"></div>
+                            </div>
+                            <div class="poke-ball-bottom"></div>
+                          </div>
                       </div>
                       <div class="screen evo-name">{{ evoTwo ? evoTwo : 'No data' }}</div>
                   </div>
-                  
                   <div>
                       <div class="flex-center">
                           <div class="evo-num">III</div>
                       </div>
-                      <div :class="{ 'pokemon-sprite': !evoOne, 'pokemon-sprite-small': !evoOne, 'empty-evo': !evoOne }">
-                          <img v-if="evoTree" :src="evoSpriteTree" :alt="evoTree" class="pokemon-sprite pokemon-sprite-small">
+                      <div :class="{ 'pokemon-sprite': !evoSpriteTree, 'pokemon-sprite-small': !evoSpriteTree, 'empty-evo': !evoSpriteTree }" class="sprite-image">
+                          <img v-if="evoSpriteTree" :src="evoSpriteTree" :alt="evoTree" class="pokemon-sprite pokemon-sprite-small">
+                          <div v-if="!evoSpriteTree" class="poke-ball">
+                            <div class="poke-ball-top"></div>
+                            <div class="poke-ball-center">
+                              <div class="poke-ball-dot"></div>
+                            </div>
+                            <div class="poke-ball-bottom"></div>
+                          </div>
                       </div>
                       <div class="screen evo-name">{{ evoTree ? evoTree : 'No data' }}</div>
                   </div>
-                  
                 </div>
-
-
+                <div class="move-list">
+                  <div class="move-body move-screen screen">
+                    <h4>lista de moves</h4>
+                    <div>
+                      <p>nome do move</p>
+                      <p>power</p>
+                      <p>pp</p>
+                      <p>priority</p>
+                    </div>                    
+                  </div>
+                </div>
                 colocar evoluções, a lista de movimentos q ele aprende
-
               </div>
-              
-        
         </div>
       </div>
     </div>
 </template>
 
 <script>
-
 import { mdiWaveform } from '@mdi/js';
-
 const colors = {
         fire: '#EC8484',
         grass: '#8CC66D',
@@ -139,10 +147,8 @@ const colors = {
         steel: '#b8b8d0',
         normal: '#a8a878'
       }
-
 export default {
-  name: "my-component",
-
+  name: "modal-Pokemon",
   data() {
     return {
       path: mdiWaveform,
@@ -157,6 +163,10 @@ export default {
       evoSpriteOne: '',
       evoSpriteTwo: '',
       evoSpriteTree: '',
+      moveList: '',    
+      //moves: this.pokemonData.moves    
+      
+    
     }
   },
   props: ['pokemonData'],
@@ -277,11 +287,11 @@ export default {
         } else {
           this.evoTree = null;
         }            
-        console.log("funcionando");
+        //console.log("funcionando");
         
         return evoData
       }catch (error) {
-        console.error("Erro ao buscar dados da cadeia de evolução:", evoUrl, error);
+        console.log("Pokemon duas ou menos evoluções");
       }
 
       
@@ -290,10 +300,12 @@ export default {
     
     
     
+    
   },
   mounted() {
     this.$refs.audioCrie.volume = 0.3;
     this.evoChain();
+    
     
     
   },
@@ -604,20 +616,89 @@ export default {
     border-radius: 50%;
     background: black;
     border: solid #83887a 6px;
+    z-index: 99;
 }
 .poke-ball-bottom {
     background: #83887a;
     flex: 1;
     width: 100%;
 }
+.pokemon-sprite {
+  width: 100%;
+  display: flex;
+  image-rendering: pixelated;
+  border: inset #9aa28b 3px;
+  border-radius: 5px;
+  margin: 10px 0;
+  box-sizing: border-box;
+  background: linear-gradient(15deg, #cad5b5 64%, #dde2d4 70%, #dde2d4 81%, #fff 86%, #dde2d4 89%, #dde2d4 100%);
+}
 
+.pokemon-sprite-small {
+  height: 90px;
+  width: 90px;
+  margin: 3px 0;
+}
 
-
-
-
-
-
-
+.evo-name {
+  width: auto;
+  padding: 3px;
+  margin-bottom: 3px;
+  text-align: right;
+}
+.evo-num {    
+    font-size: 1.25em;
+    letter-spacing: 2px;
+    background: transparent;
+    text-align: center;
+    border: none;
+    text-shadow: #e78181 -1px 1px;
+}
+.move-list {
+  display: flex;
+  
+}
+.move-screen {
+  margin: 3px;
+  padding: 10px 20px;
+  flex: 1;
+}
+.move-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 3px;
+}
+.move-name {
+  font-size: 24px;
+  border-bottom: solid black 2px;
+  margin-bottom: 3px;
+  text-align: center;
+  text-transform: capitalize;
+}
+.move-type {
+    font-size: 18px;
+    text-transform: uppercase;
+    border: solid black 2px;
+    border-radius: 7px;
+    padding: 2px 10px;
+    text-align: center;
+}
+.move-body {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+.move-learn {
+    /* font-size: 20px; */
+    float: right;
+    margin-right: 3px;
+}
+.move-status {
+    text-transform: capitalize;
+    margin-right: 3px;
+    margin-top: 3px;
+}
 .types button {
   width: 80px;
   height: 30px;
